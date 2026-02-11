@@ -13,39 +13,25 @@ const Welcome = () => {
   const errorMessage = useSignal(null);
   const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
 
-  const handleToken = async () => {
+  const handleGoogleLogin = async () => {
     isLoading.value = true;
     try {
-      if (!inputRef.current.value) return;
-
       // Demo mode: bypass authentication
       if (isDemoMode) {
         // Store demo token and redirect
         localStorage.setItem("token", JSON.stringify("DEMO_TOKEN"));
         localStorage.setItem("demoUser", JSON.stringify({
           id: "demo-user-123",
-          email: inputRef.current?.value,
+          email: "demo@kystlaget.no",
           name: "Demo User"
         }));
         window.location.href = "/home";
         return;
       }
 
-      // Production mode: validate token with API
-      const response = await fetch("/api/User/Profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${inputRef.current?.value}`,
-        },
-      });
-      if (response.status === 401) {
-        return (errorMessage.value = `${response.statusText} invaild token!`);
-      }
-      const data = await response.json();
-      // console.log(data);
-      window.location.href = "/home";
-      localStorage.setItem("token", JSON.stringify(inputRef.current?.value));
+      // Production mode: Google OAuth flow would go here
+      // For now, this is a placeholder for future Google authentication
+      errorMessage.value = "Google authentication not yet implemented. Please contact administrator.";
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -57,109 +43,78 @@ const Welcome = () => {
   };
 
   return (
-    <div className="flex items-center justify-between w-full sm:h-screen ">
+    <div className="flex items-center justify-between w-full h-screen">
+      {/* Left side - Login form */}
       <div
-        className={` my-0 sm:my-4 h-full p-2 sm:p-10 w-full sm:w-1/2 ${
-          isDarkMode.value ? "bg-primary-800" : "bg-white"
+        className={`flex items-center justify-center h-full p-10 w-full sm:w-[46%] ${
+          isDarkMode.value ? "bg-primary-800" : "bg-primary-800"
         }`}
       >
-        <div className="flex flex-col sm:pt-28 items-center justify-center w-full relative pb-16 sm:pb-0 ">
-          <div className="absolute top-0 hidden sm:block sm:left-0  sm:top-10">
-            <img
-              src="/images/logo.svg"
-              alt="logo"
-              className={`w-14 h-14 ${
-                isDarkMode.value ? "bg-primary-100 p-2 rounded-full" : ""
-              }`}
-            />
-          </div>
-          <div className="flex flex-col gap-2 items-center w-full mt-4  sm:hidden">
-            <img
-              src="/images/logo.svg"
-              alt="logo"
-              className={`w-14 h-14 ${
-                isDarkMode.value ? "bg-primary-100 p-2 rounded-full" : ""
-              }`}
-            />
-            <div className="w-full h-80 overflow-hidden">
-              <img
-                src="/images/boat.jpg"
-                alt="boat"
-                className="w-full h-full object-cover block sm:hidden"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 my-10">
+        <div className="flex flex-col gap-6 w-full max-w-[504px] px-4">
+          <div className="flex flex-col gap-2">
             <Typography
               size="body2/bold"
-              variant={isDarkMode.value ? "darkModeOn" : "secondary"}
+              className="text-white opacity-80"
             >
               {t("Welcome To")}
             </Typography>
             <Typography
               size="h6/bold"
-              variant={isDarkMode.value ? "darkModeOn" : ""}
+              className="text-white"
             >
-              {t("Kystlaget Trondheim")}
+              {t("Kystlaget Trondhjem")}
             </Typography>
             <Typography
               size="body2/semi-bold"
-              variant={isDarkMode.value ? "darkModeOn" : "secondary"}
+              className="text-white opacity-70 mt-2"
             >
               {t("Not a member yet?")}{" "}
               <a
                 href="https://www.kystlaget-trh.no/elfryd/"
-                className="text-teritary-600"
+                className="text-teritary-400 hover:text-teritary-300"
               >
                 {t("Become a member")}
               </a>
             </Typography>
-
-            <div className="flex flex-col gap-4">
-              <Typography
-                size="body1/semi-bold"
-                variant={isDarkMode.value ? "darkModeOn" : "error"}
-              >
-                {isDemoMode ? "Demo Mode - Enter any email" : t("Login with your token")}
-              </Typography>
-              <Input
-                type="text"
-                label={isDemoMode ? "Enter your email" : t("Access token")}
-                inputRef={inputRef}
-              />
-              <Button
-                type="button"
-                onClick={handleToken}
-                title="login"
-                className="hover:!bg-primary-700"
-              >
-                {isLoading.value ? `${t("Please wait...")}` : t("Login")}
-              </Button>
-
-              {errorMessage.value ? (
-                <Typography variant="error" className="my-4">
-                  {errorMessage.value}
-                </Typography>
-              ) : null}
-            </div>
-
-            <Typography
-              size="body2/noraml"
-              variant={isDarkMode.value ? "darkModeOn" : "secondary"}
-            >
-              {t(
-                "Here you can log in to Kystlaget Trondheim's booking system. To be able to log in, you must be a member of Kystlaget."
-              )}
-            </Typography>
           </div>
+
+          {/* Google Login Button */}
+          <button
+            onClick={handleGoogleLogin}
+            disabled={isLoading.value}
+            className="flex items-center justify-center gap-3 w-full bg-primary-700 hover:bg-primary-600 text-white px-6 py-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <img src="/images/google_logo.svg" alt="Google" className="w-6 h-6" />
+            <span className="font-semibold">
+              {isLoading.value ? `${t("Please wait...")}` : t("Login with your Google")}
+            </span>
+          </button>
+
+          {errorMessage.value ? (
+            <Typography variant="error" className="text-red-400">
+              {errorMessage.value}
+            </Typography>
+          ) : null}
+
+          <Typography
+            size="body2/normal"
+            className="text-white opacity-60 mt-4"
+          >
+            {t(
+              "Here you can log in to Kystlaget Trondheim's booking system. To be able to log in, you must be a member of Kystlaget."
+            )}
+          </Typography>
         </div>
       </div>
 
-      <img
-        src="/images/boat.jpg"
-        alt="boat"
-        className="w-1/2 h-full object-cover hidden sm:block"
-      />
+      {/* Right side - Boat image */}
+      <div className="hidden sm:block w-[54%] h-full overflow-hidden">
+        <img
+          src="/images/boat.jpg"
+          alt="boat"
+          className="w-full h-full object-cover"
+        />
+      </div>
     </div>
   );
 };
