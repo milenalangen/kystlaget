@@ -9,5 +9,6 @@
 
 # Environment variables
 # Add these in Netlify UI:
+# VITE_DEMO_MODE - set to "true" to enable demo mode (accepts any email)
 # VITE_API_URL - your backend API URL
 # VITE_STORMGLASS_API_KEY - for tide data
