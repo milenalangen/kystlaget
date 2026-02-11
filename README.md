@@ -2,6 +2,12 @@
 
 A Progressive Web App (PWA) for managing boat bookings and key distribution for Kystlaget Trondhjem.
 
+## 🎭 Demo Mode Available!
+
+**Want to showcase the app without authentication?** Enable Demo Mode to allow login with any email (no token required). Perfect for presentations and demonstrations!
+
+👉 **[See Demo Mode Setup Guide](./DEMO_MODE.md)** for quick setup instructions.
+
 ## Features
 
 - Boat booking system with calendar integration
@@ -12,6 +18,7 @@ A Progressive Web App (PWA) for managing boat bookings and key distribution for 
 - Light/Dark mode
 - Progressive Web App capabilities
 - Responsive design
+- **Demo mode** for testing without authentication
 
 ## Tech Stack
 

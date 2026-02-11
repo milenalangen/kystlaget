@@ -1,5 +1,6 @@
 import { signal } from "@preact/signals-react";
 import { authToken } from "../../store/authToken";
+import { isDemoUser, getDemoUser } from "../../utils/demoData";
 
 class User {
   state = signal("loading");
@@ -12,6 +13,14 @@ class User {
   }
 
   async refetch() {
+    // Demo mode: use mock user data
+    if (isDemoUser()) {
+      this.data.value = getDemoUser();
+      this.state.value = "authenticated";
+      this.image.value = "/images/placeholderUser.svg";
+      return;
+    }
+
     try {
       const response = await fetch(`/api/User/Profile`, {
         method: "GET",

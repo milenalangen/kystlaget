@@ -2,6 +2,19 @@
 
 After deploying to Netlify, you need to configure these environment variables.
 
+## 🎭 Quick Start: Demo Mode (No Authentication)
+
+**Want to test the app without real authentication?** Just add this one variable:
+
+```
+Key:   VITE_DEMO_MODE
+Value: true
+```
+
+Then skip to the bottom for optional weather/tide configuration. **[Read more about Demo Mode](./DEMO_MODE.md)**
+
+---
+
 ## How to Add Environment Variables in Netlify
 
 1. Log into your Netlify dashboard
@@ -9,7 +22,9 @@ After deploying to Netlify, you need to configure these environment variables.
 3. Go to **Site settings** → **Environment variables**
 4. Click **Add a variable** for each one below
 
-## Required Environment Variables
+## Production Environment Variables
+
+For production deployment with real authentication, add these variables:
 
 Copy and paste these exactly as shown (update the API key):
 

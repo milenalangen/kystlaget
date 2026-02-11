@@ -11,11 +11,27 @@ const Welcome = () => {
   const inputRef = useRef(null);
   const isLoading = useSignal(false);
   const errorMessage = useSignal(null);
+  const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
 
   const handleToken = async () => {
     isLoading.value = true;
     try {
       if (!inputRef.current.value) return;
+
+      // Demo mode: bypass authentication
+      if (isDemoMode) {
+        // Store demo token and redirect
+        localStorage.setItem("token", JSON.stringify("DEMO_TOKEN"));
+        localStorage.setItem("demoUser", JSON.stringify({
+          id: "demo-user-123",
+          email: inputRef.current?.value,
+          name: "Demo User"
+        }));
+        window.location.href = "/home";
+        return;
+      }
+
+      // Production mode: validate token with API
       const response = await fetch("/api/User/Profile", {
         method: "GET",
         headers: {
@@ -104,11 +120,11 @@ const Welcome = () => {
                 size="body1/semi-bold"
                 variant={isDarkMode.value ? "darkModeOn" : "error"}
               >
-                {t("Login with your token")}
+                {isDemoMode ? "Demo Mode - Enter any email" : t("Login with your token")}
               </Typography>
               <Input
                 type="text"
-                label={t("Access token")}
+                label={isDemoMode ? "Enter your email" : t("Access token")}
                 inputRef={inputRef}
               />
               <Button
